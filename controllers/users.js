@@ -27,8 +27,12 @@ const getUserById = (req, res) => {
         res.status(200).send(user);
       }
     })
-    .catch(() => {
-      res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию' });
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
+      } else {
+        res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию' });
+      }
     });
 };
 

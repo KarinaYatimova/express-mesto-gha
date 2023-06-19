@@ -100,7 +100,6 @@ const dislikeCard = (req, res) => {
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Передан несуществующий _id карточки' });
-        res.status(200).send(card);
       } else {
         res.status(200).send(card);
       }
