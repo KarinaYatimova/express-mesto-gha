@@ -49,7 +49,7 @@ const deleteCardById = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res
           .status(ERROR_CODE)
           .send({
@@ -77,7 +77,7 @@ const likeCard = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res
           .status(ERROR_CODE)
           .send({
@@ -105,7 +105,7 @@ const dislikeCard = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res
           .status(ERROR_CODE)
           .send({ message: 'Переданы некорректные данные для снятии лайка' });
