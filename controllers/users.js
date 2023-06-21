@@ -25,7 +25,7 @@ const getUserById = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
-      } else if (err.name === 'NotValidId') {
+      } else if (err.message === 'NotValidId') {
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Пользователь по указанному _id не найден' });
@@ -77,7 +77,7 @@ const updateUser = (req, res) => {
         res
           .status(ERROR_CODE)
           .send({ message: 'Переданы некорректные данные при обновлении профиля' });
-      } else if (err.name === 'NotValidId') {
+      } else if (err.message === 'NotValidId') {
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Пользователь с указанным _id не найден' });
@@ -108,7 +108,7 @@ const updateAvatar = (req, res) => {
         res
           .status(ERROR_CODE)
           .send({ message: 'Переданы некорректные данные при обновлении аватара' });
-      } else if (err.name === 'NotValidId') {
+      } else if (err.message === 'NotValidId') {
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Пользователь с указанным _id не найден' });
