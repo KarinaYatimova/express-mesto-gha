@@ -65,25 +65,21 @@ const updateUser = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-      upsert: false, // если пользователь не найден, он не будет создан
     },
   )
+    .orFail(new Error('NotValidId'))
     .then((user) => {
-      if (!user) {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Пользователь с указанным _id не найден' });
-      } else {
-        res.status(200).send(user);
-      }
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res
           .status(ERROR_CODE)
-          .send({
-            message: 'Переданы некорректные данные при обновлении профиля',
-          });
+          .send({ message: 'Переданы некорректные данные при обновлении профиля' });
+      } else if (err.message === 'NotValidId') {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: 'Пользователь с указанным _id не найден' });
       } else {
         res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию' });
       }
@@ -102,22 +98,19 @@ const updateAvatar = (req, res) => {
       upsert: false,
     },
   )
+    .orFail(new Error('NotValidId'))
     .then((user) => {
-      if (!user) {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Пользователь с указанным _id не найден' });
-      } else {
-        res.status(200).send(user);
-      }
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res
           .status(ERROR_CODE)
-          .send({
-            message: 'Переданы некорректные данные при обновлении аватара',
-          });
+          .send({ message: 'Переданы некорректные данные при обновлении аватара' });
+      } else if (err.message === 'NotValidId') {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: 'Пользователь с указанным _id не найден' });
       } else {
         res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию' });
       }
