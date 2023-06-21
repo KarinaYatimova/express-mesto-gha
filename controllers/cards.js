@@ -39,22 +39,17 @@ const deleteCardById = (req, res) => {
   const { cardId } = req.params;
 
   Card.findByIdAndRemove(cardId)
+    .orFail(new Error('NotValidId'))
     .then((card) => {
-      if (!card) {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Карточка с указанным _id не найдена' });
-      } else {
-        res.status(200).send(card);
-      }
+      res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
+        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при удалении карточки' });
+      } else if (err.name === 'NotValidId') {
         res
-          .status(ERROR_CODE)
-          .send({
-            message: 'Переданы некорректные данные при создании карточки',
-          });
+          .status(ERROR_NOT_FOUND)
+          .send({ message: 'Карточка с указанным _id не найдена' });
       } else {
         res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию' });
       }
@@ -67,22 +62,17 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
+    .orFail(new Error('NotValidId'))
     .then((card) => {
-      if (!card) {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Передан несуществующий _id карточки' });
-      } else {
-        res.status(200).send(card);
-      }
+      res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
+        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные для постановке лайка' });
+      } else if (err.name === 'NotValidId') {
         res
-          .status(ERROR_CODE)
-          .send({
-            message: 'Переданы некорректные данные для постановки лайка',
-          });
+          .status(ERROR_NOT_FOUND)
+          .send({ message: 'Передан несуществующий _id карточки' });
       } else {
         res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию' });
       }
@@ -95,20 +85,17 @@ const dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
+    .orFail(new Error('NotValidId'))
     .then((card) => {
-      if (!card) {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Передан несуществующий _id карточки' });
-      } else {
-        res.status(200).send(card);
-      }
+      res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
+        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные для снятия лайка' });
+      } else if (err.name === 'NotValidId') {
         res
-          .status(ERROR_CODE)
-          .send({ message: 'Переданы некорректные данные для снятии лайка' });
+          .status(ERROR_NOT_FOUND)
+          .send({ message: 'Передан несуществующий _id карточки' });
       } else {
         res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию' });
       }

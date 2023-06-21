@@ -18,18 +18,17 @@ const getUserById = (req, res) => {
   const { userId } = req.params;
 
   User.findById(userId)
+    .orFail(new Error('NotValidId'))
     .then((user) => {
-      if (!user) {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Пользователь по указанному _id не найден' });
-      } else {
-        res.status(200).send(user);
-      }
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
+      } else if (err.name === 'NotValidId') {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: 'Пользователь по указанному _id не найден' });
       } else {
         res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию' });
       }
@@ -66,25 +65,22 @@ const updateUser = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-      upsert: true, // если пользователь не найден, он будет создан
+      upsert: false, // если пользователь не найден, он будет создан
     },
   )
+    .orFail(new Error('NotValidId'))
     .then((user) => {
-      if (!user) {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Пользователь с указанным _id не найден' });
-      } else {
-        res.status(200).send(user);
-      }
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res
           .status(ERROR_CODE)
-          .send({
-            message: 'Переданы некорректные данные при обновлении профиля',
-          });
+          .send({ message: 'Переданы некорректные данные при обновлении профиля' });
+      } else if (err.name === 'NotValidId') {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: 'Пользователь с указанным _id не найден' });
       } else {
         res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию' });
       }
@@ -100,25 +96,22 @@ const updateAvatar = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
+      upsert: false,
     },
   )
+    .orFail(new Error('NotValidId'))
     .then((user) => {
-      if (!user) {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Пользователь с указанным _id не найден' });
-      } else {
-        res.status(200).send(user);
-      }
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res
           .status(ERROR_CODE)
-          .send({
-            message: 'Переданы некорректные данные при обновлении аватара',
-          });
+          .send({ message: 'Переданы некорректные данные при обновлении аватара' });
+      } else if (err.name === 'NotValidId') {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: 'Пользователь с указанным _id не найден' });
       } else {
         res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию' });
       }
