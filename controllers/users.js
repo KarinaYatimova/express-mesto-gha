@@ -76,7 +76,7 @@ const updateUser = (req, res) => {
       if (err.name === 'ValidationError') {
         res
           .status(ERROR_CODE)
-          .send({ message: 'Переданы некорректные данные при обновлении профиля' });
+          .send({ message: 'Переданы некорректные данные при обновлени профиля' });
       } else if (err.message === 'NotValidId') {
         res
           .status(ERROR_NOT_FOUND)
@@ -107,7 +107,7 @@ const updateAvatar = (req, res) => {
       if (err.name === 'ValidationError') {
         res
           .status(ERROR_CODE)
-          .send({ message: 'Переданы некорректные данные при обновлении аватара' });
+          .send({ message: 'Переданы некорректные данные при обновлени аватара' });
       } else if (err.message === 'NotValidId') {
         res
           .status(ERROR_NOT_FOUND)
