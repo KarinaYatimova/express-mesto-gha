@@ -59,7 +59,7 @@ const updateUser = (req, res) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
-    req.params._id,
+    req.user._id,
     { name, about },
     // Передадим объект опций:
     {
@@ -91,7 +91,7 @@ const updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(
-    req.params._id,
+    req.user._id,
     { avatar },
     {
       new: true,
