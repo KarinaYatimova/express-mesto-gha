@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const routes = require('./routes/index');
+const errorHandler = require('./middlewares/error-handler');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -22,18 +23,12 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
     console.log('Connected to mestodb');
   });
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '648e2670a04a5e78d6338a2f',
-  };
-
-  next();
-});
-
 app.use(bodyParser.json()); // для собирания JSON-формата
 app.use(routes);
 app.use(helmet());
 app.disable('x-powered-by');
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is runnig on port ${PORT}`);
