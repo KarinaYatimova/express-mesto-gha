@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const { errors } = require('celebrate');
 const routes = require('./routes/index');
 const errorHandler = require('./middlewares/error-handler');
 
@@ -27,7 +28,7 @@ app.use(bodyParser.json()); // для собирания JSON-формата
 app.use(routes);
 app.use(helmet());
 app.disable('x-powered-by');
-
+app.use(errors());
 app.use(errorHandler);
 
 app.listen(PORT, () => {
