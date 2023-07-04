@@ -35,6 +35,7 @@ const deleteCardById = (req, res, next) => {
     .then((card) => {
       if (card.owner.toString() !== req.user._id) {
         next(new ForbiddenError('Не хватает прав доступа'));
+        return;
       }
       Card.findByIdAndRemove(cardId)
         .then(() => {

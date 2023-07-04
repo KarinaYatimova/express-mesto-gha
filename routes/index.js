@@ -7,10 +7,12 @@ const {
   createUser,
 } = require('../controllers/users');
 const auth = require('../middlewares/auth');
+const NotFoundError = require('../errors/NotFoundError');
+const { URL_REGEX } = require('../utils/utils');
 
 router.post('/signin', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().pattern(/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i),
+    email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
 }), login);
@@ -19,8 +21,8 @@ router.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/),
-    email: Joi.string().required().pattern(/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i),
+    avatar: Joi.string().pattern(URL_REGEX),
+    email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
 }), createUser);
@@ -30,8 +32,8 @@ router.use(auth);
 router.use('/', userRoutes);
 router.use('/', cardRoutes);
 
-router.use('*', (req, res) => {
-  res.status(404).send({ message: 'Страница не найдена' });
+router.use('*', (req, res, next) => {
+  next(new NotFoundError('Страница не найдена'));
 });
 
 module.exports = router;
