@@ -30,17 +30,16 @@ const createCard = (req, res, next) => {
 
 const deleteCardById = (req, res, next) => {
   const { cardId } = req.params;
-  const { _id } = req.user;
   Card.findById(cardId)
     .orFail(new Error('NotValidId'))
     .then((card) => {
-      if (card.owner.toString() !== _id) {
+      if (card.owner.toString() !== req.user._id) {
         next(new ForbiddenError('Не хватает прав доступа'));
       }
-    });
-  Card.findByIdAndRemove(cardId)
-    .then((card) => {
-      res.status(200).send(card);
+      Card.findByIdAndRemove(cardId)
+        .then(() => {
+          res.status(200).send(card);
+        });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
