@@ -144,9 +144,7 @@ const login = (req, res, next) => {
 };
 
 const getCurrentUserById = (req, res, next) => {
-  const { _id } = req.user._id;
-
-  User.findById(_id)
+  User.findById(req.user._id)
     .orFail(new Error('NotValidId'))
     .then((user) => {
       res.status(200).send(user);

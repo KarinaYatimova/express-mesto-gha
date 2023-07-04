@@ -39,7 +39,8 @@ const deleteCardById = (req, res, next) => {
       Card.findByIdAndRemove(cardId)
         .then(() => {
           res.status(200).send(card);
-        });
+        })
+        .catch(next);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -49,8 +50,7 @@ const deleteCardById = (req, res, next) => {
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 const likeCard = (req, res, next) => {
